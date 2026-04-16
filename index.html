@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classroom Discussion Forum</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="nav-title">📚 Classroom Forum</h1>
+            <p class="nav-subtitle">Share your thoughts with the class</p>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Post Creation Form -->
+        <div class="form-section">
+            <form id="postForm" class="post-form">
+                <div class="form-group">
+                    <label for="authorName">Your Name</label>
+                    <input 
+                        type="text" 
+                        id="authorName" 
+                        placeholder="Enter your name" 
+                        required
+                        maxlength="50"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="topicTitle">Topic Title</label>
+                    <input 
+                        type="text" 
+                        id="topicTitle" 
+                        placeholder="What's your topic?" 
+                        required
+                        maxlength="100"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="messageContent">Message</label>
+                    <textarea 
+                        id="messageContent" 
+                        placeholder="Share your thoughts..." 
+                        rows="4"
+                        required
+                        maxlength="1000"
+                    ></textarea>
+                </div>
+
+                <button type="submit" class="btn-submit">Post to Forum</button>
+            </form>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div id="loadingSpinner" class="loading-spinner hidden">
+            <div class="spinner"></div>
+            <p>Loading posts...</p>
+        </div>
+
+        <!-- Error Message -->
+        <div id="errorMessage" class="error-message hidden"></div>
+
+        <!-- Posts Feed -->
+        <div class="feed-section">
+            <div id="postsFeed" class="posts-feed">
+                <!-- Posts will be inserted here -->
+            </div>
+        </div>
+
+        <!-- No Posts Message -->
+        <div id="noPosts" class="no-posts hidden">
+            <p>No posts yet. Be the first to start a discussion!</p>
+        </div>
+    </div>
+
+    <!-- Supabase Client Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Application Logic -->
+    <script src="app.js"></script>
+</body>
+</html>

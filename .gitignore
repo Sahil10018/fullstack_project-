@@ -1,0 +1,10 @@
+# Ignore node_modules and local env files
+node_modules/
+.env
+
+# Ignore Python cache files
+__pycache__/
+*.pyc
+
+# Ignore VS Code settings
+.vscode/
