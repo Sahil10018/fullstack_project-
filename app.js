@@ -1,10 +1,42 @@
 // ===== Supabase Configuration =====
-const SUPABASE_URL = 'https://YOUR_SUPABASE_URL.supabase.co';
-const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+let supabase;
 
-// Initialize Supabase Client
+// Initialize Supabase Client from .env file
 const { createClient } = window.supabase;
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+async function initSupabase() {
+    const env = await loadEnv();
+
+    if (!env.SUPABASE_URL || !env.SUPABASE_ANON_KEY) {
+        throw new Error('Missing SUPABASE_URL or SUPABASE_ANON_KEY in .env');
+    }
+
+    supabase = createClient(env.SUPABASE_URL, env.SUPABASE_ANON_KEY);
+}
+
+async function loadEnv() {
+    const response = await fetch('.env');
+    if (!response.ok) {
+        throw new Error('Could not load .env file');
+    }
+
+    const envText = await response.text();
+    return parseEnv(envText);
+}
+
+function parseEnv(text) {
+    const env = {};
+
+    text.split(/\r?\n/).forEach((line) => {
+        const trimmed = line.trim();
+        if (!trimmed || trimmed.startsWith('#')) return;
+
+        const [key, ...rest] = trimmed.split('=');
+        env[key] = rest.join('=').trim();
+    });
+
+    return env;
+}
 
 // ===== DOM Elements =====
 const postForm = document.getElementById('postForm');
@@ -18,8 +50,14 @@ const errorMessage = document.getElementById('errorMessage');
 const submitButton = postForm.querySelector('.btn-submit');
 
 // ===== Initialize App =====
-document.addEventListener('DOMContentLoaded', () => {
-    loadPosts();
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        await initSupabase();
+        await loadPosts();
+    } catch (error) {
+        console.error('Initialization error:', error);
+        showError('Configuration error. Please check .env and reload.');
+    }
 });
 
 // ===== Form Submission Handler =====

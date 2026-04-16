@@ -41,7 +41,17 @@ classroom-forum/
    - **anon public key** (copy this)
 3. Keep these safe - you'll need them next
 
-### Step 4: Configure the Application
+### Step 4: Configure the Application with .env
+
+1. Open or create the `.env` file in the project root
+2. Add your Supabase settings like this:
+   ```env
+   SUPABASE_URL=https://YOUR_SUPABASE_URL.supabase.co
+   SUPABASE_ANON_KEY=YOUR_SUPABASE_ANON_KEY
+   ```
+3. Save the file
+
+### Step 5: Run the App Locally
 
 1. Open `app.js` in a text editor
 2. Find these lines at the top:
