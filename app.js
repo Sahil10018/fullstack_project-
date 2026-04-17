@@ -1,42 +1,5 @@
-// ===== Supabase Configuration =====
-let supabase;
-
-// Initialize Supabase Client from .env file
-const { createClient } = window.supabase;
-
-async function initSupabase() {
-    const env = await loadEnv();
-
-    if (!env.SUPABASE_URL || !env.SUPABASE_ANON_KEY) {
-        throw new Error('Missing SUPABASE_URL or SUPABASE_ANON_KEY in .env');
-    }
-
-    supabase = createClient(env.SUPABASE_URL, env.SUPABASE_ANON_KEY);
-}
-
-async function loadEnv() {
-    const response = await fetch('.env');
-    if (!response.ok) {
-        throw new Error('Could not load .env file');
-    }
-
-    const envText = await response.text();
-    return parseEnv(envText);
-}
-
-function parseEnv(text) {
-    const env = {};
-
-    text.split(/\r?\n/).forEach((line) => {
-        const trimmed = line.trim();
-        if (!trimmed || trimmed.startsWith('#')) return;
-
-        const [key, ...rest] = trimmed.split('=');
-        env[key] = rest.join('=').trim();
-    });
-
-    return env;
-}
+// ===== Local API Configuration =====
+const API_URL = 'http://localhost:3000/api';
 
 // ===== DOM Elements =====
 const postForm = document.getElementById('postForm');
@@ -52,11 +15,10 @@ const submitButton = postForm.querySelector('.btn-submit');
 // ===== Initialize App =====
 document.addEventListener('DOMContentLoaded', async () => {
     try {
-        await initSupabase();
         await loadPosts();
     } catch (error) {
         console.error('Initialization error:', error);
-        showError('Configuration error. Please check .env and reload.');
+        showError('Failed to connect to server. Make sure the server is running on port 3000.');
     }
 });
 
@@ -78,18 +40,21 @@ postForm.addEventListener('submit', async (e) => {
     submitButton.textContent = 'Posting...';
 
     try {
-        const { error } = await supabase
-            .from('posts')
-            .insert([
-                {
-                    author_name: authorName,
-                    title: title,
-                    content: content,
-                    created_at: new Date().toISOString()
-                }
-            ]);
+        const response = await fetch(`${API_URL}/posts`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                author_name: authorName,
+                title: title,
+                content: content
+            })
+        });
 
-        if (error) throw error;
+        if (!response.ok) {
+            throw new Error('Failed to create post');
+        }
 
         // Clear form
         postForm.reset();
@@ -118,12 +83,14 @@ async function loadPosts() {
         showLoadingSpinner(true);
         hideError();
 
-        const { data, error } = await supabase
-            .from('posts')
-            .select('*')
-            .order('created_at', { ascending: false });
+        const response = await fetch(`${API_URL}/posts`);
+        
+        if (!response.ok) {
+            throw new Error('Failed to fetch posts');
+        }
 
-        if (error) throw error;
+        const result = await response.json();
+        const data = result.data || [];
 
         showLoadingSpinner(false);
 
@@ -138,7 +105,7 @@ async function loadPosts() {
     } catch (error) {
         console.error('Error loading posts:', error);
         showLoadingSpinner(false);
-        showError('Failed to load posts. Please refresh the page.');
+        showError('Failed to load posts. Is the server running?');
         noPosts.classList.remove('hidden');
     }
 }
@@ -245,7 +212,7 @@ function hideError() {
  */
 function showSuccessMessage() {
     // Optional: Add a brief success message or animation
-    // You can add a toast notification here if desired
+    console.log('Post created successfully!');
 }
 
 /**

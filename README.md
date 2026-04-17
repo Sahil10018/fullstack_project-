@@ -1,6 +1,6 @@
-# 📚 Classroom Discussion Forum - Setup Guide
+# 📚 Classroom Discussion Forum - Local Setup
 
-A clean, minimalist single-page classroom discussion forum built with vanilla HTML, CSS, JavaScript, and Supabase.
+A complete classroom discussion forum with a Node.js backend and local SQLite database. No external services required!
 
 ---
 
@@ -10,194 +10,167 @@ A clean, minimalist single-page classroom discussion forum built with vanilla HT
 classroom-forum/
 ├── index.html       # Main HTML structure
 ├── style.css        # Styling and responsive design
-├── app.js           # Application logic and Supabase integration
-└── setup.sql        # Database table creation script
+├── app.js           # Frontend application logic
+├── server.js        # Node.js Express backend
+├── package.json     # Node.js dependencies
+└── forum.db         # SQLite database (created automatically)
 ```
 
 ---
 
 ## 🚀 Quick Start Guide
 
-### Step 1: Set Up Supabase Project
+### Prerequisites
+- **Node.js** (version 12 or higher) - Download from [nodejs.org](https://nodejs.org)
 
-1. Go to [supabase.com](https://supabase.com) and sign up/log in
-2. Click **"New Project"** and create a new project
-3. Wait for the project to initialize (takes ~2 minutes)
-4. Once ready, you'll see your **Project Dashboard**
+### Step 1: Install Dependencies
 
-### Step 2: Create the Database Table
-
-1. In your Supabase dashboard, go to **SQL Editor** (left sidebar)
-2. Click **"New Query"**
-3. Copy the entire contents of `setup.sql` and paste it into the editor
-4. Click **"Run"** to execute the SQL
-5. You should see a success message
-
-### Step 3: Get Your Supabase Credentials
-
-1. Go to **Settings** → **API** (left sidebar)
-2. You'll see two keys:
-   - **Project URL** (copy this)
-   - **anon public key** (copy this)
-3. Keep these safe - you'll need them next
-
-### Step 4: Configure the Application with .env
-
-1. Open or create the `.env` file in the project root
-2. Add your Supabase settings like this:
-   ```env
-   SUPABASE_URL=https://YOUR_SUPABASE_URL.supabase.co
-   SUPABASE_ANON_KEY=YOUR_SUPABASE_ANON_KEY
-   ```
-3. Save the file
-
-### Step 5: Run the App Locally
-
-1. Open `app.js` in a text editor
-2. Find these lines at the top:
-   ```javascript
-   const SUPABASE_URL = 'https://YOUR_SUPABASE_URL.supabase.co';
-   const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
-   ```
-3. Replace `YOUR_SUPABASE_URL` with your **Project URL**
-4. Replace `YOUR_SUPABASE_ANON_KEY` with your **anon public key**
-5. Save the file
-
----
-
-## 💻 How to Run Locally
-
-### Option A: Using Python (Recommended for Beginners)
-
-**Python 3.x:**
-```bash
-cd classroom-forum
-python -m http.server 8000
-```
-
-**Python 2.x:**
-```bash
-cd classroom-forum
-python -m SimpleHTTPServer 8000
-```
-
-Then open your browser and go to: **http://localhost:8000**
-
-### Option B: Using Node.js (if installed)
+Open PowerShell or Command Prompt in your project directory and run:
 
 ```bash
-cd classroom-forum
-npx http-server
+npm install
 ```
 
-Then open your browser to the URL shown (usually **http://localhost:8080**)
+This will install:
+- `express` - Web server framework
+- `sqlite3` - Local database
+- `cors` - Cross-origin resource sharing
 
-### Option C: Using Live Server (VS Code Extension)
+### Step 2: Start the Server
 
-1. Install the **Live Server** extension in VS Code
-2. Right-click on `index.html`
-3. Select **"Open with Live Server"**
-4. Your browser will automatically open
+Run the backend server:
 
-### Option D: Direct File Opening (Quick Test)
+```bash
+npm start
+```
 
-Simply double-click `index.html` to open it in your browser.
-*(Note: This works, but some features may be limited due to browser security)*
+You should see:
+```
+✨ Classroom Forum Server Running ✨
+📍 Local: http://localhost:3000
+Press CTRL+C to stop the server
+```
+
+### Step 3: Open the Application
+
+Open your web browser and go to:
+
+**http://localhost:3000**
+
+That's it! The forum is now running locally with a SQLite database.
 
 ---
 
-## 🌐 Deploy Online (Free Options)
+## 💻 How to Use
 
-### Deploy to Netlify
+### Creating Posts
+1. Enter your name in the **"Your Name"** field
+2. Enter a topic title in the **"Topic Title"** field
+3. Share your thoughts in the **"Message"** field
+4. Click **"Post to Forum"**
 
-1. Create a zip file containing all three files (index.html, style.css, app.js)
-2. Go to [netlify.com](https://netlify.com)
-3. Sign up with GitHub, GitLab, or email
-4. Drag and drop your zip file into Netlify
-5. Your site will be live in seconds!
+### Viewing Posts
+- Posts appear in reverse chronological order (newest first)
+- Relative timestamps (e.g., "5 min ago", "2h ago", etc.)
+- Posts are automatically refreshed every 30 seconds
 
-### Deploy to Vercel
-
-1. Go to [vercel.com](https://vercel.com)
-2. Click **"Import Project"**
-3. Paste your repository URL or upload files
-4. Click **"Deploy"**
-
-### Deploy to GitHub Pages
-
-1. Create a GitHub repository
-2. Upload your files
-3. Go to **Settings** → **Pages**
-4. Select **"Deploy from a branch"** and choose **main**
-5. Your site will be live at `https://yourusername.github.io/repo-name`
+### Database
+- The SQLite database `forum.db` is created automatically on first run
+- All posts are stored locally on your computer
+- No data is sent to external services
 
 ---
 
-## ✨ Features
+## 🛠️ API Endpoints
 
-✅ **No Authentication Required** - Users can post without logging in  
-✅ **Real-time Feed** - Posts refresh automatically every 30 seconds  
-✅ **Responsive Design** - Works perfectly on mobile, tablet, and desktop  
-✅ **Clean & Minimalist UI** - Professional blue theme with soft gray background  
-✅ **XSS Protection** - Input sanitization to prevent malicious code  
-✅ **Easy to Customize** - All styling in one CSS file, all logic in one JS file  
+The backend provides the following REST API endpoints:
 
----
+### GET /api/posts
+Retrieve all posts (ordered by newest first)
 
-## 🎨 Customization
-
-### Change Colors
-
-Open `style.css` and modify these values:
-
-```css
-/* Navigation Bar Colors */
-.navbar {
-    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
-    /* Change #1e3a8a and #2563eb to your desired colors */
-}
-
-/* Background Color */
-body {
-    background-color: #f0f2f5;
-    /* Change this to your preferred background color */
-}
+```bash
+curl http://localhost:3000/api/posts
 ```
 
-### Change Button Text
+### POST /api/posts
+Create a new post
 
-Open `index.html` and look for:
-```html
-<button type="submit" class="btn-submit">Post to Forum</button>
+```bash
+curl -X POST http://localhost:3000/api/posts \
+  -H "Content-Type: application/json" \
+  -d '{
+    "author_name": "John",
+    "title": "My Topic",
+    "content": "This is my post content"
+  }'
 ```
 
-### Change Form Labels
+### GET /api/posts/:id
+Retrieve a specific post
 
-Open `index.html` and modify the label text:
-```html
-<label for="authorName">Your Name</label>
-<label for="topicTitle">Topic Title</label>
-<label for="messageContent">Message</label>
+```bash
+curl http://localhost:3000/api/posts/1
 ```
 
-### Change Input Placeholders
+### DELETE /api/posts/:id
+Delete a specific post
 
-```html
-<input placeholder="Enter your name" ... >
-<input placeholder="What's your topic?" ... >
-<textarea placeholder="Share your thoughts..." ... ></textarea>
+```bash
+curl -X DELETE http://localhost:3000/api/posts/1
 ```
 
----
+### GET /api/health
+Check if the server is running
+
+```bash
+curl http://localhost:3000/api/health
+```
 
 ## 🔧 Troubleshooting
 
-### "Failed to create post" Error
+### Issue: "Cannot find module 'express'"
+**Solution:** Run `npm install` to install dependencies
 
-**Problem:** Posts aren't being created  
-**Solution:** 
-- Check that your Supabase credentials are correct in `app.js`
-- Verify the `posts` table exists in your database
+### Issue: "EADDRINUSE: address already in use :::3000"
+**Solution:** The port 3000 is already in use. Either:
+- Close the other application using port 3000
+- Or modify the `PORT` variable in `server.js`
+
+### Issue: "Failed to connect to server"
+**Solution:** Make sure the backend server is running. Check that you see the server startup message in your terminal.
+
+### Issue: Posts not saving
+**Solution:** Check that the `forum.db` file is created in your project directory. The database should be writable.
+
+---
+
+## 📝 Features
+
+✅ Create and view discussion posts
+✅ Local SQLite database (no network required)
+✅ Responsive design for desktop and mobile
+✅ Automatic 30-second auto-refresh
+✅ XSS protection with HTML sanitization
+✅ Relative timestamp formatting
+✅ Clean, modern UI
+
+---
+
+## 🎓 Learning Points
+
+This project demonstrates:
+- Node.js and Express.js backend development
+- SQLite database usage
+- REST API design
+- JavaScript fetch API
+- CORS handling
+- Database initialization
+
+---
+
+## 📄 License
+
+MIT License - Feel free to use and modify as needed
 - Check browser console (F12) for error messages
 
 ### Page loads but shows "No posts yet"
